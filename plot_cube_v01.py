@@ -102,8 +102,8 @@ z_10A = np.linspace(0, cube_data_10A.shape[2]-1, cube_data_10A.shape[2])
 Y_10A, Z_10A = np.meshgrid(y_10A, z_10A)
 
 # import transients
-dipoles_time = np.genfromtxt('Dipoles_4201.dat', skip_header = 1, delimiter=',')
-fields_time = np.genfromtxt('Efield_4201.dat', skip_header = 1, delimiter=',')
+dipoles_time = np.genfromtxt('Dipoles.dat', skip_header = 1, delimiter=',')
+fields_time = np.genfromtxt('Efield.dat', skip_header = 1, delimiter=',')
 
 # plotting loop for creating each frame of the video
 for i in range(timesteps):
@@ -191,11 +191,11 @@ for i in range(timesteps):
 
     # save each plot to file
     if i<10:
-      plt.savefig('Data_fac_3_correct/frame=00' + str(i) + '.png')
+      plt.savefig('01_plotting_20_timesteps/frame=00' + str(i) + '.png')
     elif i<100:
-      plt.savefig('Data_fac_3_correct/frame=0' + str(i) + '.png')
+      plt.savefig('01_plotting_20_timesteps/frame=0' + str(i) + '.png')
     else:
-      plt.savefig('Data_fac_3_correct/frame=' + str(i) + '.png')
+      plt.savefig('01_plotting_20_timesteps/frame=' + str(i) + '.png')
 
     print('plotted t='+str(i))
 
