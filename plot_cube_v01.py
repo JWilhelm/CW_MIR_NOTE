@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 importfolder3A= '/scratch/hpc-prf-eprop2d/eprop2d1_Jan/11_MIR_plasmonics/01_50_kV_m_30_THz_1010_atoms_20_cycles/01_dist_3A/' # data folder
 importfolder10A= '/scratch/hpc-prf-eprop2d/eprop2d1_Jan/11_MIR_plasmonics/01_50_kV_m_30_THz_1010_atoms_20_cycles/04_dist_10A/' # data folder
 
-timesteps = 20 # number of timesteps
+timesteps = 170 # number of timesteps
 time_array = np.arange(timesteps) * 0.2
 
 ## import .cube file for reference electron density
@@ -146,8 +146,10 @@ for i in range(timesteps):
     ax2.set_aspect('equal')
     ax2.set_title('Electron density, 10 Angstrom')
 
+    at_u_to_kV_m = 5.142E11 / 1E
+
     # Plot the 2D cross-section of Ez
-    im_axs0 = ax3.pcolor(Y_3A.T, Z_3A.T, cube_data_2d_3A_Ez[:,:,i], cmap='seismic', vmin=min_lim_Ez, vmax=max_lim_Ez)
+    im_axs0 = ax3.pcolor(Y_3A.T, Z_3A.T, cube_data_2d_3A_Ez[:,:,i]*at_u_to_kV_m, cmap='seismic', vmin=min_lim_Ez, vmax=max_lim_Ez)
     # Scatter the atoms on top
     ax3.scatter(y_atoms_3A, z_atoms_3A,s=3,  color='yellow', alpha = 1)
     # Add colorbar
@@ -158,10 +160,10 @@ for i in range(timesteps):
                     labelbottom = False, bottom = False)
 
     ax3.set_aspect('equal')
-    ax3.set_title('Electric field (z), 3 Angstrom')
+    ax4.set_title('E_z (MV/cm), dist = 3 A')
 
     # Plot the 2D cross-section of Ez
-    im_axs1 = ax4.pcolor(Y_10A.T, Z_10A.T, cube_data_2d_10A_Ez[:, :, i], cmap='seismic', vmin=min_lim_Ez, vmax=max_lim_Ez)
+    im_axs1 = ax4.pcolor(Y_10A.T, Z_10A.T, cube_data_2d_10A_Ez[:, :, i]*at_u_to_kV_m, cmap='seismic', vmin=min_lim_Ez, vmax=max_lim_Ez)
     # Scatter the atoms on top
     ax4.scatter(y_atoms_10A, z_atoms_10A, s=3, color='yellow', alpha=1)
     # Add colorbar
@@ -172,8 +174,7 @@ for i in range(timesteps):
                     labelbottom=False, bottom=False)
 
     ax4.set_aspect('equal')
-    ax4.set_title('Electric field (z), 10 Angstrom')
-
+    ax4.set_title('E_z (MV/cm), dist = 10 A')
 
     # note I flipped the polarity of this data for easy reading.
     ax5.plot(fields_time[:,0], fields_time[:,1]/13.0, label = '$E$')
@@ -183,7 +184,7 @@ for i in range(timesteps):
 
     ax5.axvline(time_array[i])
     ax5.legend(loc = 'upper left', frameon = False)
-    ax5.set_xlim([10, 80])
+    ax5.set_xlim([0, 35])
     ax5.set_xlabel('Time (fs)')
     ax5.set_ylabel('Dipole')
 
@@ -191,16 +192,13 @@ for i in range(timesteps):
 
     # save each plot to file
     if i<10:
-      plt.savefig('01_plotting_20_timesteps/frame=00' + str(i) + '.png')
+      plt.savefig('02_plotting_one_cycle_34_fs_E_z_in_kV_per_m_unit/frame=00' + str(i) + '.png')
     elif i<100:
-      plt.savefig('01_plotting_20_timesteps/frame=0' + str(i) + '.png')
+      plt.savefig('02_plotting_one_cycle_34_fs_E_z_in_kV_per_m_unit/frame=0' + str(i) + '.png')
     else:
-      plt.savefig('01_plotting_20_timesteps/frame=' + str(i) + '.png')
+      plt.savefig('02_plotting_one_cycle_34_fs_E_z_in_kV_per_m_unit/frame=' + str(i) + '.png')
 
     print('plotted t='+str(i))
 
     plt.close()
 
-
-
-# to make the frames into the movie, quicktime works well on mac.
