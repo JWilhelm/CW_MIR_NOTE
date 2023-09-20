@@ -2,10 +2,10 @@ import numpy as np
 from ase.io.cube import read_cube_data
 import matplotlib.pyplot as plt
 
-importfolder3A= '/scratch/hpc-prf-eprop2d/eprop2d1_Jan/11_MIR_plasmonics/01_50_kV_m_30_THz_1010_atoms_20_cycles/01_dist_3A/' # data folder
-importfolder10A= '/scratch/hpc-prf-eprop2d/eprop2d1_Jan/11_MIR_plasmonics/01_50_kV_m_30_THz_1010_atoms_20_cycles/04_dist_10A/' # data folder
+importfolder3A= '/scratch/hpc-prf-eprop2d/eprop2d1_Jan/11_MIR_plasmonics/06_0.5_MV_30_THz_1010_atoms_10_cycles/06_dist_3A/' # data folder
+importfolder10A= '/scratch/hpc-prf-eprop2d/eprop2d1_Jan/11_MIR_plasmonics/06_0.5_MV_30_THz_1010_atoms_10_cycles/01_dist_10A/' # data folder
 
-timesteps = 50 # number of timesteps
+timesteps = 250 # number of timesteps
 time_array = np.arange(timesteps) * 0.2
 
 ## import .cube file for reference electron density
@@ -196,11 +196,11 @@ for i in range(timesteps):
 
     # save each plot to file
     if i<10:
-      plt.savefig('02_plotting_one_cycle_34_fs_E_z_in_kV_per_m_unit/frame=00' + str(i) + '.png')
+      plt.savefig('02_plotting_driving_field_0.5_MV_cm/frame=00' + str(i) + '.png')
     elif i<100:
-      plt.savefig('02_plotting_one_cycle_34_fs_E_z_in_kV_per_m_unit/frame=0' + str(i) + '.png')
+      plt.savefig('02_plotting_driving_field_0.5_MV_cm/frame=0' + str(i) + '.png')
     else:
-      plt.savefig('02_plotting_one_cycle_34_fs_E_z_in_kV_per_m_unit/frame=' + str(i) + '.png')
+      plt.savefig('02_plotting_driving_field_0.5_MV_cm/frame=' + str(i) + '.png')
 
     print('plotted t='+str(i))
 
