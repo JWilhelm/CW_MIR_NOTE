@@ -1,14 +1,15 @@
 import os
+import subprocess
 
 # Define the directory and file path
-directory_path = "../../06_dist_3A"
+directory = "06_dist_3A"
 file_name = "cp2k.out"
 struc_name = "struc.xyz"
-file_path = os.path.join(directory_path, file_name)
-struc_path = os.path.join(directory_path,struc_name)
+file_path = os.path.join("../../"+directory, file_name)
+struc_path = os.path.join("../../"+directory,struc_name)
 
 # Function to read lines from 3rd to 1011 following "Mulliken" and perform calculations
-def process_mulliken_charges(file_path, xyz_file):
+def process_mulliken_charges(file_path, directory, xyz_file):
 
     num_atoms, atomic_symbols, atomic_coordinates = xyz_file
 
@@ -27,6 +28,13 @@ def process_mulliken_charges(file_path, xyz_file):
 
     print("z_avg_tip_A = "+str(z_avg_tip_A))
     print("z_avg_surface_A = "+str(z_avg_surface_A))
+
+    subprocess.run("echo '' > "+directory+"_charge_tip", shell=True, check=True)
+    subprocess.run("echo '' > "+directory+"_charge_surface", shell=True, check=True)
+    subprocess.run("echo '' > "+directory+"_dipole_tip", shell=True, check=True)
+    subprocess.run("echo '' > "+directory+"_dipole_surface", shell=True, check=True)
+    subprocess.run("echo '' > "+directory+"_dipole_between_tip_and_surface", shell=True, check=True)
+    subprocess.run("echo '' > "+directory+"_dipole", shell=True, check=True)
 
     try:
         with open(file_path, 'r') as file:
@@ -61,13 +69,17 @@ def process_mulliken_charges(file_path, xyz_file):
                   dipole_between_tip_and_surface_init = dipole_between_tip_and_surface
                   dipole_init = dipole
 
-
-#                print(f"q_tip: {charge_tip-charge_tip_init} q_surf: {charge_surface-charge_surface_init}")
                 print(f"q_tip = {charge_tip - charge_tip_init:.3f} q_surf = {charge_surface - charge_surface_init:.3f} " \
                       f"d_tip = {dipole_tip - dipole_tip_init:.3f} d_surf = {dipole_surface - dipole_surface_init:.3f} " \
                       f"d_tot = {dipole - dipole_init:.3f} " \
                       f"dipole_between_tip_and_surface = {dipole_between_tip_and_surface - dipole_between_tip_and_surface_init:.3f}")
-#                print(f"Charge of surface: {charge_surface}")
+
+                subprocess.run(f"echo '{charge_tip - charge_tip_init:.5f}' >> "        +directory+"_charge_tip", shell=True, check=True)
+                subprocess.run(f"echo '{charge_surface - charge_surface_init:.5f}' >> "+directory+"_charge_surface", shell=True, check=True)
+                subprocess.run(f"echo '{dipole_tip - dipole_tip_init:.5f}' >> "        +directory+"_dipole_tip", shell=True, check=True)
+                subprocess.run(f"echo '{dipole_surface - dipole_surface_init:.5f}' >> "+directory+"_dipole_surface", shell=True, check=True)
+                subprocess.run(f"echo '{dipole_between_tip_and_surface - dipole_between_tip_and_surface_init:.5f}' >> "+directory+"_dipole_between_tip_and_surface", shell=True, check=True)
+                subprocess.run(f"echo '{dipole - dipole_init:.5f}' >> "                +directory+"_dipole", shell=True, check=True)
 
                 # Reset sums when a new "Mulliken" occurrence is found
                 charge_tip = 0.0
@@ -90,7 +102,7 @@ def process_mulliken_charges(file_path, xyz_file):
                     x, y, z = atomic_coordinates[i-3]
 
                     # Update sums based on entry position
-                    if i >= 353:
+                    if i < 353:
                         charge_tip += entry_5
                         # 1 Angström = 1/0.529 atomic units
                         dipole_tip += (z-z_avg_tip_A)/0.529*entry_5
@@ -132,4 +144,4 @@ def read_xyz_file(file_path):
 xyz_file = read_xyz_file(struc_path)
 
 # Call the function to process Mulliken data
-process_mulliken_charges(file_path, xyz_file)
+process_mulliken_charges(file_path, directory, xyz_file)
