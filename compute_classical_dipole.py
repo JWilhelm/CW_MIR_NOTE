@@ -35,11 +35,19 @@ def process_mulliken_charges(file_path, xyz_file):
         # Initialize variables to store the sums
         charge_tip = 0.0
         charge_surface = 0.0
+        dipole_tip = 0.0
+        dipole_surface = 0.0
+        dipole_between_tip_and_surface = 0.0
+        dipole = 0.0
 
         read_lines = False
 
         charge_tip_init = 0.0
         charge_surface_init = 0.0
+        dipole_tip_init = 0.0
+        dipole_surface_init = 0.0
+        dipole_between_tip_and_surface_init = 0.0
+        dipole_init = 0.0
 
         i_t = 0
         for line in lines:
@@ -48,9 +56,17 @@ def process_mulliken_charges(file_path, xyz_file):
                 if i_t == 1:
                   charge_tip_init = charge_tip
                   charge_surface_init = charge_surface
+                  dipole_tip_init = dipole_tip
+                  dipole_surface_init = dipole_surface
+                  dipole_between_tip_and_surface_init = dipole_between_tip_and_surface
+                  dipole_init = dipole
 
 
-                print(f"Charge of tip: {charge_tip-charge_tip_init}, charge of surface: {charge_surface-charge_surface_init}")
+#                print(f"q_tip: {charge_tip-charge_tip_init} q_surf: {charge_surface-charge_surface_init}")
+                print(f"q_tip = {charge_tip - charge_tip_init:.3f} q_surf = {charge_surface - charge_surface_init:.3f} " \
+                      f"d_tip = {dipole_tip - dipole_tip_init:.3f} d_surf = {dipole_surface - dipole_surface_init:.3f} " \
+                      f"d_tot = {dipole - dipole_init:.3f} " \
+                      f"dipole_between_tip_and_surface = {dipole_between_tip_and_surface - dipole_between_tip_and_surface_init:.3f}")
 #                print(f"Charge of surface: {charge_surface}")
 
                 # Reset sums when a new "Mulliken" occurrence is found
@@ -58,6 +74,8 @@ def process_mulliken_charges(file_path, xyz_file):
                 charge_surface = 0.0
                 dipole_tip = 0.0
                 dipole_surface = 0.0
+                dipole_between_tip_and_surface = 0.0
+                dipole = 0.0
 
                 read_lines = True
                 i = 0
@@ -69,15 +87,21 @@ def process_mulliken_charges(file_path, xyz_file):
                 if len(entries) >= 5 and i > 2 and i < 1013:
                     entry_5 = float(entries[4])
 
+                    x, y, z = atomic_coordinates[i-3]
+
                     # Update sums based on entry position
                     if i >= 353:
                         charge_tip += entry_5
-                        x, y, z = atomic_coordinates[i-3]
                         # 1 Angström = 1/0.529 atomic units
-                        dipole_tip += z/0.529*entry_5
+                        dipole_tip += (z-z_avg_tip_A)/0.529*entry_5
+                        dipole_between_tip_and_surface += z_avg_tip_A/0.529*entry_5
                     else:
                         charge_surface += entry_5
+                        # 1 Angström = 1/0.529 atomic units
+                        dipole_surface += (z-z_avg_surface_A)/0.529*entry_5
+                        dipole_between_tip_and_surface += z_avg_surface_A/0.529*entry_5
 
+                    dipole += z/0.529*entry_5
 
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
