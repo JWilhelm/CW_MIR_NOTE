@@ -12,8 +12,8 @@ def process_mulliken_charges(file_path, xyz_file):
 
     num_atoms, atomic_symbols, atomic_coordinates = xyz_file
 
-    z_avg_tip = 0
-    z_avg_surface = 0
+    z_avg_tip_A = 0
+    z_avg_surface_A = 0
 
     n_atom_tip = 352
 
@@ -21,12 +21,12 @@ def process_mulliken_charges(file_path, xyz_file):
         
        x, y, z = atomic_coordinates[i_atom]
        if i_atom <= n_atom_tip:
-          z_avg_tip += z/n_atom_tip/0.529
+          z_avg_tip_A += z/n_atom_tip
        else:
-          z_avg_surface += z/(num_atoms-n_atom_tip)/0.529
+          z_avg_surface_A += z/(num_atoms-n_atom_tip)
 
-    print("z_avg_tip = "+str(z_avg_tip))
-    print("z_avg_surface = "+str(z_avg_surface))
+    print("z_avg_tip_A = "+str(z_avg_tip_A))
+    print("z_avg_surface_A = "+str(z_avg_surface_A))
 
     try:
         with open(file_path, 'r') as file:
@@ -39,6 +39,7 @@ def process_mulliken_charges(file_path, xyz_file):
         read_lines = False
 
         charge_tip_init = 0.0
+        charge_surface_init = 0.0
 
         i_t = 0
         for line in lines:
@@ -46,8 +47,10 @@ def process_mulliken_charges(file_path, xyz_file):
 
                 if i_t == 1:
                   charge_tip_init = charge_tip
+                  charge_surface_init = charge_surface
 
-                print(f"Charge of tip: {charge_tip-charge_tip_init}")
+
+                print(f"Charge of tip: {charge_tip-charge_tip_init}, charge of surface: {charge_surface-charge_surface_init}")
 #                print(f"Charge of surface: {charge_surface}")
 
                 # Reset sums when a new "Mulliken" occurrence is found
