@@ -2,7 +2,7 @@ import os
 import subprocess
 
 # Define the directory and file path
-directory = "06_dist_3A"
+directory = "02_dist_8A"
 file_name = "cp2k.out"
 struc_name = "struc.xyz"
 file_path = os.path.join("../../"+directory, file_name)
@@ -56,6 +56,9 @@ def process_mulliken_charges(file_path, directory, xyz_file):
         dipole_surface_init = 0.0
         dipole_between_tip_and_surface_init = 0.0
         dipole_init = 0.0
+
+        z_avg_tip = 0.0
+        z_avg_surface = 0.0
 
         i_t = 0
         for line in lines:
